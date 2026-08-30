@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adaptive Assessment — Karmayogi Compass</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">KC</div>
+      <div class="brand-name">Karmayogi<br>Compass</div>
+    </div>
+    <nav>
+      <div class="nav-group-label">Learner Journey</div>
+      <ul class="nav-list">
+        <li><a class="nav-item" href="/login"><span class="n">1</span> Login</a></li>
+        <li><a class="nav-item" href="/dashboard"><span class="n">2</span> Dashboard</a></li>
+        <li><a class="nav-item" href="/passport"><span class="n">3</span> Passport</a></li>
+        <li><a class="nav-item" href="/path"><span class="n">4</span> Learning Path</a></li>
+        <li><a class="nav-item" href="/course-detail"><span class="n">5</span> Course Detail</a></li>
+        <li><a class="nav-item" href="/learning"><span class="n">6</span> Learning + AI</a></li>
+        <li><a class="nav-item active" href="/assessment"><span class="n">7</span> Assessment</a></li>
+        <li><a class="nav-item" href="/results"><span class="n">8</span> Results</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-foot">
+      SIH26101 · Internal Prototype<br>Karmayogi Compass v0.1
+      <br><a href="#" class="btn-ghost btn-logout" style="font-size:11.5px;">Sign out →</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-title">
+        <span class="eyebrow">AI Evaluation</span>
+        <h1>Adaptive Assessment</h1>
+      </div>
+      <div class="profile">
+        <div class="profile-info">
+          <div class="profile-name" id="profileName">Rina Sharma</div>
+          <div class="profile-role" id="profileRole">Statistical Officer — MoSPI</div>
+        </div>
+        <div class="avatar" id="profileAvatar">RS</div>
+        <a href="#" class="btn btn-outline btn-logout" style="margin-left:12px; padding:6px 14px; font-size:13px;">Sign out</a>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div class="grid grid-12" style="gap:20px;">
+
+        <div class="span-7 card card-pad">
+          <div class="quiz-progress">
+            <i class="done"></i><i class="done"></i><i class="current"></i><i></i><i></i>
+          </div>
+          <div class="quiz-tag">Question 3 of 5 · Weak Area: SQL</div>
+          <div class="quiz-question">
+            You need the total number of households surveyed in each district, but only for districts with more than 500 households. Which clause filters on the aggregated count?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option"><span class="opt-letter">A</span> WHERE COUNT(*) &gt; 500</div>
+            <div class="quiz-option selected"><span class="opt-letter">B</span> HAVING COUNT(*) &gt; 500</div>
+            <div class="quiz-option"><span class="opt-letter">C</span> ORDER BY COUNT(*) &gt; 500</div>
+            <div class="quiz-option"><span class="opt-letter">D</span> GROUP BY COUNT(*) &gt; 500</div>
+          </div>
+          <span class="citation-tag">◆ Source: Module 3, Pg 14</span>
+
+          <div class="page-actions" style="border-top:none; margin-top:22px; padding-top:0;">
+            <button class="btn btn-outline">← Previous</button>
+            <button class="btn btn-primary" id="quizNext">Next Question →</button>
+          </div>
+        </div>
+
+        <div class="span-5 stack">
+          <div class="card card-pad">
+            <h2 style="font-size:15px;">Practical Work Simulation</h2>
+            <p class="text-sm text-soft" style="margin:8px 0 14px;">
+              After the quiz, clean this raw survey extract: remove duplicate household IDs and flag rows with missing income values.
+            </p>
+            <div class="sim-panel">
+              <span class="text-sm" style="font-weight:600;color:var(--navy);">household_extract.csv</span>
+              <pre>hh_id, district, income, respondents
+HH1042, Kochi, 18400, 4
+HH1042, Kochi, 18400, 4   <span style="color:#e8b4a8;">-- duplicate</span>
+HH1043, Kochi, , 3        <span style="color:#e8b4a8;">-- missing income</span>
+HH1044, Alappuzha, 22100, 5</pre>
+            </div>
+            <button class="btn btn-navy btn-block" id="runSim" style="margin-top:14px;">Run simulation</button>
+            <div id="simOutput" hidden style="margin-top:14px;">
+              <span class="badge green">✓ 1 duplicate removed · 1 missing value flagged</span>
+            </div>
+          </div>
+
+          <div class="card card-pad">
+            <h2 style="font-size:15px;">Why This Assessment Is Adaptive</h2>
+            <p class="text-sm text-soft" style="margin-top:8px;">
+              Questions are drawn disproportionately from your weakest competency — SQL — and every question links back to the exact course page it was sourced from, so incorrect answers point straight to the material you need to revisit.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

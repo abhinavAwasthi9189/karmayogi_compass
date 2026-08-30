@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Detail — Karmayogi Compass</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">KC</div>
+      <div class="brand-name">Karmayogi<br>Compass</div>
+    </div>
+    <nav>
+      <div class="nav-group-label">Learner Journey</div>
+      <ul class="nav-list">
+        <li><a class="nav-item" href="/login"><span class="n">1</span> Login</a></li>
+        <li><a class="nav-item" href="/dashboard"><span class="n">2</span> Dashboard</a></li>
+        <li><a class="nav-item" href="/passport"><span class="n">3</span> Passport</a></li>
+        <li><a class="nav-item" href="/path"><span class="n">4</span> Learning Path</a></li>
+        <li><a class="nav-item active" href="/course-detail"><span class="n">5</span> Course Detail</a></li>
+        <li><a class="nav-item" href="/learning"><span class="n">6</span> Learning + AI</a></li>
+        <li><a class="nav-item" href="/assessment"><span class="n">7</span> Assessment</a></li>
+        <li><a class="nav-item" href="/results"><span class="n">8</span> Results</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-foot">
+      SIH26101 · Internal Prototype<br>Karmayogi Compass v0.1
+      <br><a href="#" class="btn-ghost btn-logout" style="font-size:11.5px;">Sign out →</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-title">
+        <span class="eyebrow">iGOT Integration</span>
+        <h1>Course Detail</h1>
+      </div>
+      <div class="profile">
+        <div class="profile-info">
+          <div class="profile-name" id="profileName">Rina Sharma</div>
+          <div class="profile-role" id="profileRole">Statistical Officer — MoSPI</div>
+        </div>
+        <div class="avatar" id="profileAvatar">RS</div>
+        <a href="#" class="btn btn-outline btn-logout" style="margin-left:12px; padding:6px 14px; font-size:13px;">Sign out</a>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div class="grid grid-12" style="gap:20px;">
+        <div class="span-8 stack">
+
+          <div class="card card-pad">
+            <span class="badge outline" style="margin-bottom:10px;">iGOT Karmayogi · Step 1 of 3</span>
+            <h2 style="font-size:21px;">Applied SQL for Survey Data Management</h2>
+            <p class="text-soft text-sm" style="margin:8px 0 16px;">
+              A hands-on course teaching SQL fundamentals through the lens of government survey datasets — filtering, joins, aggregation and data cleaning for statistical reporting.
+            </p>
+            <div class="flex gap-12" style="flex-wrap:wrap;">
+              <span class="badge outline">6 Modules</span>
+              <span class="badge outline">4h 20m</span>
+              <span class="badge outline">Beginner–Intermediate</span>
+              <span class="badge green">92% Match to Your Gap</span>
+            </div>
+          </div>
+
+          <div class="card card-pad">
+            <div class="card-header"><h2>Module Progression</h2></div>
+            <table>
+              <thead><tr><th>#</th><th>Module</th><th>Duration</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="cell-metric">01</td><td>SQL Foundations for Survey Data</td><td class="text-sm text-soft">35m</td><td><span class="badge green">✓ Complete</span></td></tr>
+                <tr><td class="cell-metric">02</td><td>Filtering &amp; WHERE Clauses</td><td class="text-sm text-soft">40m</td><td><span class="badge green">✓ Complete</span></td></tr>
+                <tr class="row-selected"><td class="cell-metric">03</td><td>GROUP BY &amp; Aggregation</td><td class="text-sm text-soft">48m</td><td><span class="badge gold">In Progress</span></td></tr>
+                <tr><td class="cell-metric">04</td><td>Joins Across Survey Tables</td><td class="text-sm text-soft">55m</td><td><span class="badge outline">Not Started</span></td></tr>
+                <tr><td class="cell-metric">05</td><td>Data Cleaning for Reporting</td><td class="text-sm text-soft">42m</td><td><span class="badge outline">Not Started</span></td></tr>
+                <tr><td class="cell-metric">06</td><td>Applied Capstone: NSS Dataset</td><td class="text-sm text-soft">60m</td><td><span class="badge outline">Not Started</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <div class="span-4 stack">
+          <div class="card card-pad">
+            <h2 style="font-size:15px;">Why this course?</h2>
+            <p class="text-sm text-soft" style="margin:8px 0 14px;">
+              Recommended because it directly targets your lowest-scoring competency — SQL (52/100) — with content weighted toward the same survey-management context used in your role's practical tasks.
+            </p>
+            <div class="divider"></div>
+            <div class="comp-row">
+              <div class="comp-top"><span class="comp-name">Addresses Gap</span><span class="comp-score">23 pts</span></div>
+              <div class="bar-track"><div class="bar-fill critical" data-target="92" style="width:0"></div></div>
+            </div>
+          </div>
+
+          <div class="card card-pad">
+            <a href="/learning" class="btn btn-primary btn-block">Continue Learning →</a>
+            <a href="#" class="btn btn-outline btn-block" style="margin-top:10px;">Open in iGOT Karmayogi ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-actions">
+        <a href="/path" class="btn btn-ghost">← Back to Path</a>
+        <a href="/learning" class="btn btn-primary">Resume Module 3 →</a>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

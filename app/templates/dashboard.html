@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Karmayogi Compass</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">KC</div>
+      <div class="brand-name">Karmayogi<br>Compass</div>
+    </div>
+    <nav>
+      <div class="nav-group-label">Learner Journey</div>
+      <ul class="nav-list">
+        <li><a class="nav-item" href="/login"><span class="n">1</span> Login</a></li>
+        <li><a class="nav-item active" href="/dashboard"><span class="n">2</span> Dashboard</a></li>
+        <li><a class="nav-item" href="/passport"><span class="n">3</span> Passport</a></li>
+        <li><a class="nav-item" href="/path"><span class="n">4</span> Learning Path</a></li>
+        <li><a class="nav-item" href="/course-detail"><span class="n">5</span> Course Detail</a></li>
+        <li><a class="nav-item" href="/learning"><span class="n">6</span> Learning + AI</a></li>
+        <li><a class="nav-item" href="/assessment"><span class="n">7</span> Assessment</a></li>
+        <li><a class="nav-item" href="/results"><span class="n">8</span> Results</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-foot">
+      SIH26101 · Internal Prototype<br>Karmayogi Compass v0.1
+      <br><a href="#" class="btn-ghost btn-logout" style="font-size:11.5px;">Sign out →</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-title">
+        <span class="eyebrow">Primary Hub</span>
+        <h1>Competency Dashboard</h1>
+      </div>
+      <div class="profile">
+        <div class="profile-info">
+          <div class="profile-name" id="profileName">Rina Sharma</div>
+          <div class="profile-role" id="profileRole">Statistical Officer — MoSPI</div>
+        </div>
+        <div class="avatar" id="profileAvatar">RS</div>
+        <a href="#" class="btn btn-outline btn-logout" style="margin-left:12px; padding:6px 14px; font-size:13px;">Sign out</a>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div class="grid grid-12" style="margin-bottom:18px;">
+
+        <!-- Overall score -->
+        <div class="span-4 card card-pad">
+          <div class="card-header" style="margin-bottom:6px;"><h2>Overall Capability Score</h2></div>
+          <div class="gauge-wrap">
+            <div class="gauge" id="overallGauge" data-value="0" data-max="100">
+              <svg width="132" height="132" viewBox="0 0 132 132">
+                <circle class="gauge-track" cx="66" cy="66" r="54"></circle>
+                <circle class="gauge-value" cx="66" cy="66" r="54"></circle>
+              </svg>
+              <div class="gauge-center">
+                <div class="gauge-score" id="overallScore">—</div>
+                <div class="gauge-max">/ 100</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge outline" id="overallBadge" style="margin-bottom:8px;">Loading…</span>
+              <p class="text-sm text-soft" style="margin-top:10px;" id="overallSubtext">Fetching your competency profile…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Competency domains -->
+        <div class="span-8 card card-pad">
+          <div class="card-header">
+            <h2>Competency Domains</h2>
+            <p>Role requirement vs. current standing</p>
+          </div>
+          <div class="grid grid-2">
+            <div class="comp-row">
+              <div class="comp-top"><span class="comp-name">Statistical Competencies</span><span class="comp-score" id="score-statistical">—</span></div>
+              <div class="bar-track"><div class="bar-fill" id="bar-statistical" data-target="0" style="width:0"></div></div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-top"><span class="comp-name">Digital Governance</span><span class="comp-score" id="score-digital_gov">—</span></div>
+              <div class="bar-track"><div class="bar-fill gold" id="bar-digital_gov" data-target="0" style="width:0"></div></div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-top"><span class="comp-name">Technical Competencies</span><span class="comp-score" id="score-technical">—</span></div>
+              <div class="bar-track"><div class="bar-fill" id="bar-technical" data-target="0" style="width:0"></div></div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-top"><span class="comp-name">Behavioral &amp; Managerial</span><span class="comp-score" id="score-managerial">—</span></div>
+              <div class="bar-track"><div class="bar-fill" id="bar-managerial" data-target="0" style="width:0"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+
+        <!-- Biggest gap focus -->
+        <div class="card card-pad" id="gapCard" style="border-color:#e6c9c1;">
+          <div class="badge red" style="margin-bottom:12px;">Biggest Gap Focus</div>
+          <h2 style="font-size:18px;" id="gapDomain">Loading…</h2>
+          <p class="text-soft text-sm" style="margin:6px 0 16px;" id="gapDescription">
+            Fetching your skill-gap analysis…
+          </p>
+          <div class="flex gap-12" style="margin-bottom:16px;">
+            <div><div class="mono" style="font-size:20px;font-weight:600;color:var(--ink-soft);" id="gapCurrent">—</div><div class="text-sm text-soft">Current</div></div>
+            <div class="score-arrow">→</div>
+            <div><div class="mono" style="font-size:20px;font-weight:600;color:var(--navy);" id="gapRequired">—</div><div class="text-sm text-soft">Required</div></div>
+            <div style="margin-left:auto;text-align:right;"><div class="mono" style="font-size:20px;font-weight:600;color:var(--red);" id="gapPoints">—</div><div class="text-sm text-soft">Gap (pts)</div></div>
+          </div>
+          <a href="/passport" class="btn btn-navy btn-sm">View Gap →</a>
+        </div>
+
+        <!-- Recommended course -->
+        <div class="card card-pad" id="courseCard">
+          <div class="card-header" style="margin-bottom:12px;">
+            <h2 style="font-size:16px;">Recommended Course</h2>
+            <span class="badge outline">iGOT Karmayogi</span>
+          </div>
+          <div class="course-card" style="border:none; padding:0;">
+            <div class="course-top">
+              <div>
+                <div class="course-title" id="courseTitle">Loading…</div>
+                <div class="course-meta" id="courseMeta">Fetching recommendations…</div>
+              </div>
+              <span class="match-chip" id="courseDomainChip"></span>
+            </div>
+            <p class="text-sm text-soft" style="margin:2px 0 4px;" id="courseDescription"></p>
+            <div class="flex gap-8">
+              <a href="/course-detail" class="btn btn-primary btn-sm" id="courseStartLink">Start Path</a>
+              <a id="courseLaunchLink" href="#" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Why this course? →</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/main.js"></script>
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>
