@@ -47,6 +47,7 @@ async function kcLoadCourseDetail () {
   document.getElementById('courseSourceBadge').textContent = course.source;
   document.getElementById('courseDomainBadge').textContent = KC_DOMAIN_LABELS_CD[course.domain] || course.domain;
   document.getElementById('launchLink').href = course.launch_url || '#';
+  kcLoadWhatYoullLearn(course);
 
   // Show the real gap this course's domain addresses for this user.
   try {
@@ -72,6 +73,25 @@ async function kcLoadCourseDetail () {
   }
 
   if (typeof initBars === 'function') initBars();
+}
+
+async function kcLoadWhatYoullLearn (course) {
+  const el = document.getElementById('whatYoullLearn');
+  const context = `Course: ${course.title}. Description: ${course.description || 'No description given.'}`;
+  try {
+    const res = await kcAuthFetch('/compass-ai/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        context,
+        question: 'In 2-3 short sentences, describe what a MoSPI official will actually be able to do after finishing this course.',
+      }),
+    });
+    const data = res.ok ? await res.json() : null;
+    el.textContent = data ? data.answer : 'Could not generate a summary for this course right now.';
+  } catch (e) {
+    el.textContent = 'Could not generate a summary for this course right now.';
+  }
 }
 
 document.addEventListener('DOMContentLoaded', kcLoadCourseDetail);

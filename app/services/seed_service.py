@@ -8,11 +8,11 @@ DEMO_PASSWORD = "Karmayogi@123"
 
 
 def seed_demo_data(session: Session) -> None:
-    existing = session.exec(select(User)).first()
-    if existing:
-        return
-
     for entry in SEED_USERS:
+        already_exists = session.exec(select(User).where(User.email == entry["email"])).first()
+        if already_exists:
+            continue
+
         user = User(
             name=entry["name"], email=entry["email"], hashed_password=hash_password(DEMO_PASSWORD),
             role=entry["role"], department=entry["department"], designation=entry["designation"],

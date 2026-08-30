@@ -76,4 +76,7 @@ SEED_USERS = [
     {"name": "Ravi Kumar", "email": "ravi.kumar@mospi.gov.in", "role": "admin",
      "department": "CSO", "designation": "Director",
      "scores": {"statistical_score": 78, "technical_score": 58, "digital_gov_score": 66, "managerial_score": 70}},
+    {"name": "Priya Iyer", "email": "priya.iyer@mospi.gov.in", "role": "official",
+     "department": "FOD", "designation": "Junior Statistical Officer",
+     "scores": {"statistical_score": 38, "technical_score": 30, "digital_gov_score": 42, "managerial_score": 25}},
 ]
