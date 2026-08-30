@@ -41,69 +41,53 @@
       </div>
       <div class="profile">
         <div class="profile-info">
-          <div class="profile-name" id="profileName">Rina Sharma</div>
-          <div class="profile-role" id="profileRole">Statistical Officer — MoSPI</div>
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-role" id="profileRole">—</div>
         </div>
-        <div class="avatar" id="profileAvatar">RS</div>
+        <div class="avatar" id="profileAvatar">—</div>
         <a href="#" class="btn btn-outline btn-logout" style="margin-left:12px; padding:6px 14px; font-size:13px;">Sign out</a>
       </div>
     </header>
 
     <main class="content">
 
-      <div class="grid grid-12" style="gap:20px;">
+      <!-- Step 1: upload a reference PDF to generate a gap-weighted quiz from -->
+      <div class="card card-pad" id="uploadPanel">
+        <h2 style="font-size:16px;">Generate Your Assessment</h2>
+        <p class="text-sm text-soft" style="margin:8px 0 16px;">
+          Upload a reference PDF (course material, a circular, a manual — anything relevant to your
+          role). Compass AI builds a 10-question quiz from it, weighted toward your biggest
+          competency gaps, with every question citing the page it came from.
+        </p>
+        <input type="file" id="pdfInput" accept="application/pdf" style="margin-bottom:14px;">
+        <div>
+          <button class="btn btn-primary" id="generateBtn">Generate Assessment</button>
+        </div>
+        <p class="text-sm" id="uploadError" style="color:var(--red); margin-top:12px; display:none;"></p>
+        <p class="text-sm text-soft" id="uploadStatus" style="margin-top:12px; display:none;"></p>
+      </div>
 
-        <div class="span-7 card card-pad">
-          <div class="quiz-progress">
-            <i class="done"></i><i class="done"></i><i class="current"></i><i></i><i></i>
-          </div>
-          <div class="quiz-tag">Question 3 of 5 · Weak Area: SQL</div>
-          <div class="quiz-question">
-            You need the total number of households surveyed in each district, but only for districts with more than 500 households. Which clause filters on the aggregated count?
-          </div>
-          <div class="quiz-options">
-            <div class="quiz-option"><span class="opt-letter">A</span> WHERE COUNT(*) &gt; 500</div>
-            <div class="quiz-option selected"><span class="opt-letter">B</span> HAVING COUNT(*) &gt; 500</div>
-            <div class="quiz-option"><span class="opt-letter">C</span> ORDER BY COUNT(*) &gt; 500</div>
-            <div class="quiz-option"><span class="opt-letter">D</span> GROUP BY COUNT(*) &gt; 500</div>
-          </div>
-          <span class="citation-tag">◆ Source: Module 3, Pg 14</span>
+      <!-- Step 2: the quiz itself -->
+      <div class="grid grid-12" style="gap:20px;" id="quizPanel" hidden>
+
+        <div class="span-12 card card-pad">
+          <div class="quiz-progress" id="quizProgress"></div>
+          <div class="quiz-tag" id="quizTag">Question — of —</div>
+          <div class="quiz-question" id="quizScenario"></div>
+          <div class="quiz-question" id="quizQuestionText" style="font-size:14.5px; font-weight:500;"></div>
+          <div class="quiz-options" id="quizOptions"></div>
+          <span class="citation-tag" id="quizCitation"></span>
 
           <div class="page-actions" style="border-top:none; margin-top:22px; padding-top:0;">
-            <button class="btn btn-outline">← Previous</button>
+            <button class="btn btn-outline" id="quizPrev">← Previous</button>
             <button class="btn btn-primary" id="quizNext">Next Question →</button>
-          </div>
-        </div>
-
-        <div class="span-5 stack">
-          <div class="card card-pad">
-            <h2 style="font-size:15px;">Practical Work Simulation</h2>
-            <p class="text-sm text-soft" style="margin:8px 0 14px;">
-              After the quiz, clean this raw survey extract: remove duplicate household IDs and flag rows with missing income values.
-            </p>
-            <div class="sim-panel">
-              <span class="text-sm" style="font-weight:600;color:var(--navy);">household_extract.csv</span>
-              <pre>hh_id, district, income, respondents
-HH1042, Kochi, 18400, 4
-HH1042, Kochi, 18400, 4   <span style="color:#e8b4a8;">-- duplicate</span>
-HH1043, Kochi, , 3        <span style="color:#e8b4a8;">-- missing income</span>
-HH1044, Alappuzha, 22100, 5</pre>
-            </div>
-            <button class="btn btn-navy btn-block" id="runSim" style="margin-top:14px;">Run simulation</button>
-            <div id="simOutput" hidden style="margin-top:14px;">
-              <span class="badge green">✓ 1 duplicate removed · 1 missing value flagged</span>
-            </div>
-          </div>
-
-          <div class="card card-pad">
-            <h2 style="font-size:15px;">Why This Assessment Is Adaptive</h2>
-            <p class="text-sm text-soft" style="margin-top:8px;">
-              Questions are drawn disproportionately from your weakest competency — SQL — and every question links back to the exact course page it was sourced from, so incorrect answers point straight to the material you need to revisit.
-            </p>
+            <button class="btn btn-navy" id="quizSubmit" hidden>Submit Assessment</button>
           </div>
         </div>
 
       </div>
+
+      <p class="text-sm" id="submitError" style="color:var(--red); margin-top:12px; display:none;"></p>
 
     </main>
   </div>
@@ -111,5 +95,6 @@ HH1044, Alappuzha, 22100, 5</pre>
 
 <script src="/static/js/auth.js"></script>
 <script src="/static/js/main.js"></script>
+<script src="/static/js/assessment.js"></script>
 </body>
 </html>

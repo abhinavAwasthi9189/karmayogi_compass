@@ -12,6 +12,15 @@ from app.adapters.factory import get_igot_adapter
 router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
 
 
+@router.get("/course/{external_id}", response_model=CourseOut)
+async def get_course(external_id: str, current_user: User = Depends(get_current_user)):
+    adapter = get_igot_adapter()
+    course = await adapter.get_course_by_id(external_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    return CourseOut(**course)
+
+
 @router.get("/{user_id}", response_model=RecommendationResponse)
 async def get_recommendations(
     user_id: int, current_user: User = Depends(get_current_user), session: Session = Depends(get_session),

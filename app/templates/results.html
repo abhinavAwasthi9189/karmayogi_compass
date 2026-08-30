@@ -41,75 +41,46 @@
       </div>
       <div class="profile">
         <div class="profile-info">
-          <div class="profile-name" id="profileName">Rina Sharma</div>
-          <div class="profile-role" id="profileRole">Statistical Officer — MoSPI</div>
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-role" id="profileRole">—</div>
         </div>
-        <div class="avatar" id="profileAvatar">RS</div>
+        <div class="avatar" id="profileAvatar">—</div>
         <a href="#" class="btn btn-outline btn-logout" style="margin-left:12px; padding:6px 14px; font-size:13px;">Sign out</a>
       </div>
     </header>
 
     <main class="content">
 
-      <div class="card" style="margin-bottom:20px;">
-        <div class="card-pad" style="padding-bottom:8px;">
-          <span class="badge green" style="margin-bottom:4px;">Assessment Complete</span>
-          <h2 style="font-size:18px; margin-top:10px;">SQL Competency — Score Improvement</h2>
-        </div>
-        <div class="score-delta">
-          <div class="score-old"><div class="score-num">52</div><div class="score-lbl">Before</div></div>
-          <div class="score-arrow">→</div>
-          <div class="score-new"><div class="score-num">57</div><div class="score-lbl">After</div></div>
-          <span class="badge green" style="margin-left:8px;">↑ 5 pts</span>
-        </div>
+      <div id="noResultPanel" class="card card-pad" hidden>
+        <h2 style="font-size:16px;">No recent assessment result to show</h2>
+        <p class="text-sm text-soft" style="margin-top:8px;">
+          Take an assessment first — its real score and competency updates will appear here.
+        </p>
+        <a href="/assessment" class="btn btn-primary" style="margin-top:14px;">Go to Assessment →</a>
       </div>
 
-      <div class="grid grid-2" style="margin-bottom:20px;">
-        <div class="card card-pad">
-          <div class="card-header"><h2>Passport — Updated Evidence</h2></div>
-          <div class="evidence-metrics" style="margin-bottom:0;">
-            <div class="evidence-metric"><span class="val">48%</span><span class="lbl">Previous Assessment</span></div>
-            <div class="evidence-metric"><span class="val">72%</span><span class="lbl">Course Logs</span></div>
-            <div class="evidence-metric"><span class="val" style="color:var(--green);">61%</span><span class="lbl">Quiz Performance</span></div>
-            <div class="evidence-metric"><span class="val" style="color:var(--green);">68%</span><span class="lbl">Practical Task</span></div>
+      <div id="resultPanel" hidden>
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-pad" style="padding-bottom:8px;">
+            <span class="badge green" style="margin-bottom:4px;">Assessment Complete</span>
+            <h2 style="font-size:18px; margin-top:10px;">Overall Score — <span id="scorePercent">—</span>%</h2>
+            <p class="text-sm text-soft" id="scoreDetail"></p>
           </div>
-          <div class="divider"></div>
-          <p class="text-sm text-soft">
-            Quiz and practical-task scores rose after completing Module 3 and the work simulation, pulling your overall SQL competency up by 5 points.
-          </p>
         </div>
 
-        <div class="card card-pad">
-          <div class="card-header"><h2>Remaining Gap to Target</h2></div>
-          <div class="comp-row">
-            <div class="comp-top"><span class="comp-name">SQL — Current vs. Required</span><span class="comp-score critical">57 / 75</span></div>
-            <div class="bar-track"><div class="bar-fill critical" data-target="76" style="width:0"></div></div>
+        <div class="grid grid-2" style="margin-bottom:20px;">
+          <div class="card card-pad">
+            <div class="card-header"><h2>Domain Breakdown</h2></div>
+            <div id="domainBreakdown" class="stack" style="gap:14px;"></div>
           </div>
-          <p class="text-sm text-soft" style="margin-top:14px;">
-            18 points remain. Compass AI recommends continuing to Step 2 of your path to close the rest of the gap.
-          </p>
-        </div>
-      </div>
 
-      <div class="card card-pad">
-        <div class="card-header"><h2>Recommended Next Steps</h2></div>
-        <div class="path-track">
-          <div class="path-step done">
-            <div class="step-marker">✓</div>
-            <div class="step-body">
-              <div class="step-source">iGOT Karmayogi</div>
-              <div class="step-title">Applied SQL for Survey Data Management</div>
-              <div class="step-desc">Completed — score improved 52 → 57.</div>
-            </div>
-          </div>
-          <div class="path-step active">
-            <div class="step-marker">2</div>
-            <div class="step-body">
-              <div class="step-source">NSSTA / TPAC</div>
-              <div class="step-title">Advanced Survey Data Processing</div>
-              <div class="step-desc">Continue closing the remaining 18-point gap.</div>
-              <a href="/path" class="btn btn-primary btn-sm">Go to Learning Path →</a>
-            </div>
+          <div class="card card-pad">
+            <div class="card-header"><h2>Updated Competency Scores</h2></div>
+            <div id="updatedScores" class="stack" style="gap:14px;"></div>
+            <div class="divider"></div>
+            <p class="text-sm text-soft">
+              Overall readiness index is now <b id="readinessIndex">—</b> / 100.
+            </p>
           </div>
         </div>
       </div>
@@ -125,5 +96,6 @@
 
 <script src="/static/js/auth.js"></script>
 <script src="/static/js/main.js"></script>
+<script src="/static/js/results.js"></script>
 </body>
 </html>

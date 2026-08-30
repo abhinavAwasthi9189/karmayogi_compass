@@ -37,14 +37,14 @@
     <header class="topbar">
       <div class="topbar-title">
         <span class="eyebrow">Contextual Assistant</span>
-        <h1>Module 3 — GROUP BY &amp; Aggregation</h1>
+        <h1 id="pageTitle">Learning</h1>
       </div>
       <div class="profile">
         <div class="profile-info">
-          <div class="profile-name" id="profileName">Rina Sharma</div>
-          <div class="profile-role" id="profileRole">Statistical Officer — MoSPI</div>
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-role" id="profileRole">—</div>
         </div>
-        <div class="avatar" id="profileAvatar">RS</div>
+        <div class="avatar" id="profileAvatar">—</div>
         <a href="#" class="btn btn-outline btn-logout" style="margin-left:12px; padding:6px 14px; font-size:13px;">Sign out</a>
       </div>
     </header>
@@ -55,33 +55,16 @@
 
         <!-- Content viewer -->
         <div class="span-7 stack">
-          <div class="card card-pad">
-            <div class="quiz-progress" style="margin-bottom:18px;">
-              <i class="done"></i><i class="done"></i><i class="current"></i><i></i><i></i><i></i>
-            </div>
-            <span class="badge outline" style="margin-bottom:12px;">Module 3 of 6</span>
-            <h2 style="font-size:19px;">Using GROUP BY to Summarize Survey Responses</h2>
-            <p class="text-sm text-soft" style="margin:10px 0 16px;">
-              In large-scale surveys, you'll often need to summarize responses by district, sector, or enumeration block.
-              The <code>GROUP BY</code> clause lets you collapse rows sharing a common value into aggregate rows, so you can
-              apply functions like <code>COUNT()</code>, <code>SUM()</code> and <code>AVG()</code> per group.
-            </p>
-            <div class="sim-panel">
-              <span class="text-sm" style="font-weight:600;color:var(--navy);">Example — Households surveyed per district</span>
-              <pre>SELECT district, COUNT(*) AS households_surveyed
-FROM nss_survey_responses
-GROUP BY district
-ORDER BY households_surveyed DESC;</pre>
-            </div>
-            <p class="text-sm text-soft" style="margin-top:16px;">
-              Notice that every column in the <code>SELECT</code> list must either be inside an aggregate function
-              or listed in the <code>GROUP BY</code> clause — this is the most common source of errors for new analysts.
-            </p>
+          <div class="card card-pad" id="courseCard">
+            <span class="badge outline" id="courseDomainBadge" style="margin-bottom:12px;">Loading…</span>
+            <h2 style="font-size:19px;" id="courseTitle">Loading your current course…</h2>
+            <p class="text-sm text-soft" style="margin:10px 0 16px;" id="courseDescription"></p>
+            <p class="text-sm text-soft" id="courseSourceLine"></p>
           </div>
 
           <div class="flex justify-between items-center">
-            <button class="btn btn-outline">← Previous Module</button>
-            <a href="/assessment" class="btn btn-primary">Mark Complete &amp; Take Assessment →</a>
+            <a href="/dashboard" class="btn btn-outline">← Back to Dashboard</a>
+            <a href="/assessment" class="btn btn-primary" id="toAssessmentLink">Take Assessment →</a>
           </div>
         </div>
 
@@ -92,28 +75,13 @@ ORDER BY households_surveyed DESC;</pre>
               <div class="ai-orb"></div>
               <div>
                 <h3>Compass AI</h3>
-                <p>Aware of: Module 3 — GROUP BY &amp; Aggregation</p>
+                <p id="aiAwareOf">Aware of: your current course</p>
               </div>
             </div>
-            <div class="ai-thread">
-              <div class="ai-msg bot">
-                <span class="msg-text">Hi Rina — I can see you're on the GROUP BY module. Want me to walk through it using a government survey example?</span>
-              </div>
-              <div class="ai-msg user">
-                <span class="msg-text">Yes, explain GROUP BY using a survey example.</span>
-              </div>
-              <div class="ai-msg bot">
-                <span class="msg-text">Think of GROUP BY like sorting survey forms into district-wise stacks before counting each stack. If you run GROUP BY district on the NSS household table, SQL forms one "stack" per district, then COUNT(*) tells you how many households are in each stack.</span>
-                <span class="src">Source: Applied SQL for Survey Data Management — Module 3, Pg 14</span>
-              </div>
-            </div>
-            <div class="ai-suggestions">
-              <span class="ai-chip">Why does my query throw an error?</span>
-              <span class="ai-chip">Show a HAVING clause example</span>
-              <span class="ai-chip">Quiz me on this module</span>
-            </div>
+            <div class="ai-thread"></div>
+            <div class="ai-suggestions"></div>
             <div class="ai-input">
-              <input type="text" placeholder="Ask Compass AI about this module…">
+              <input type="text" placeholder="Ask Compass AI about this course…">
               <button class="ai-send" aria-label="Send">→</button>
             </div>
           </div>
@@ -127,5 +95,7 @@ ORDER BY households_surveyed DESC;</pre>
 
 <script src="/static/js/auth.js"></script>
 <script src="/static/js/main.js"></script>
+<script src="/static/js/compass-ai.js"></script>
+<script src="/static/js/learning.js"></script>
 </body>
 </html>

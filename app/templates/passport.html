@@ -41,10 +41,10 @@
       </div>
       <div class="profile">
         <div class="profile-info">
-          <div class="profile-name" id="profileName">Rina Sharma</div>
-          <div class="profile-role" id="profileRole">Statistical Officer — MoSPI</div>
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-role" id="profileRole">—</div>
         </div>
-        <div class="avatar" id="profileAvatar">RS</div>
+        <div class="avatar" id="profileAvatar">—</div>
         <a href="#" class="btn btn-outline btn-logout" style="margin-left:12px; padding:6px 14px; font-size:13px;">Sign out</a>
       </div>
     </header>
@@ -56,57 +56,24 @@
           <div class="card-header">
             <div>
               <h2>Required vs. Current Competency</h2>
-              <p>Tap a row to see the empirical evidence behind its score.</p>
+              <p id="designationLine">Loading your designation's requirements…</p>
             </div>
           </div>
         </div>
         <table>
           <thead>
-            <tr><th>Competency</th><th>Required</th><th>Current</th><th>Gap</th><th>Status / Evidence Action</th></tr>
+            <tr><th>Competency</th><th>Required</th><th>Current</th><th>Gap</th><th>Status</th></tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>Sampling Design</td>
-              <td class="cell-metric">80</td>
-              <td class="cell-metric">61</td>
-              <td class="cell-metric">19</td>
-              <td><span class="badge outline">In Progress</span></td>
-            </tr>
-            <tr class="row-selected">
-              <td><b>SQL</b></td>
-              <td class="cell-metric">75</td>
-              <td class="cell-metric">52</td>
-              <td class="cell-metric">23</td>
-              <td><span class="badge red">Selected for Breakdown</span></td>
-            </tr>
-            <tr>
-              <td>Data Visualization</td>
-              <td class="cell-metric">70</td>
-              <td class="cell-metric">74</td>
-              <td class="cell-metric">0</td>
-              <td><span class="badge green">✓ Met Requirement</span></td>
-            </tr>
-            <tr>
-              <td>Survey Analysis</td>
-              <td class="cell-metric">80</td>
-              <td class="cell-metric">72</td>
-              <td class="cell-metric">8</td>
-              <td><span class="badge outline">In Progress</span></td>
-            </tr>
+          <tbody id="gapTableBody">
+            <tr><td colspan="5" class="text-sm text-soft" style="padding:16px;">Loading…</td></tr>
           </tbody>
         </table>
       </div>
 
-      <div class="callout callout-gold">
-        <div class="callout-title">Evidence Breakdown — SQL (52 / 100)</div>
-        <div class="evidence-metrics">
-          <div class="evidence-metric"><span class="val">48%</span><span class="lbl">Previous Assessment</span></div>
-          <div class="evidence-metric"><span class="val">72%</span><span class="lbl">Course Logs</span></div>
-          <div class="evidence-metric"><span class="val">55%</span><span class="lbl">Quiz Performance</span></div>
-          <div class="evidence-metric"><span class="val">49%</span><span class="lbl">Practical Task</span></div>
-        </div>
+      <div class="callout callout-gold" id="gapSummaryCard" hidden>
+        <div class="callout-title">Priority Gap — <span id="summaryDomain"></span></div>
         <div class="ai-summary">
-          <b>AI Gap Summary:</b> "Compass AI detected a significant SQL gap. Largest weakness lies in SQL-based survey data management."
+          <b>Compass AI Gap Summary:</b> <span id="aiGapSummary">Generating…</span>
         </div>
       </div>
 
@@ -121,5 +88,6 @@
 
 <script src="/static/js/auth.js"></script>
 <script src="/static/js/main.js"></script>
+<script src="/static/js/passport.js"></script>
 </body>
 </html>

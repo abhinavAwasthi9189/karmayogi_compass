@@ -41,10 +41,10 @@
       </div>
       <div class="profile">
         <div class="profile-info">
-          <div class="profile-name" id="profileName">Rina Sharma</div>
-          <div class="profile-role" id="profileRole">Statistical Officer — MoSPI</div>
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-role" id="profileRole">—</div>
         </div>
-        <div class="avatar" id="profileAvatar">RS</div>
+        <div class="avatar" id="profileAvatar">—</div>
         <a href="#" class="btn btn-outline btn-logout" style="margin-left:12px; padding:6px 14px; font-size:13px;">Sign out</a>
       </div>
     </header>
@@ -55,66 +55,31 @@
         <div class="span-8 card card-pad">
           <div class="card-header">
             <div>
-              <h2>Roadmap to Close the SQL Gap</h2>
-              <p>A structured, three-step path bridging Technical Competency from 52 → 75.</p>
+              <h2 id="roadmapTitle">Roadmap</h2>
+              <p id="roadmapSubtitle">Loading your recommended courses…</p>
             </div>
           </div>
 
-          <div class="path-track">
-            <div class="path-step active">
-              <div class="step-marker">1</div>
-              <div class="step-body">
-                <div class="step-source">iGOT Karmayogi</div>
-                <div class="step-title">Applied SQL for Survey Data Management</div>
-                <div class="step-desc">Addresses core SQL &amp; data filtering gaps.</div>
-                <a href="/course-detail" class="btn btn-primary btn-sm">Start Course</a>
-              </div>
-            </div>
-            <div class="path-step">
-              <div class="step-marker">2</div>
-              <div class="step-body">
-                <div class="step-source">NSSTA / TPAC</div>
-                <div class="step-title">Advanced Survey Data Processing</div>
-                <div class="step-desc">Strengthens statistical data handling.</div>
-                <button class="btn btn-outline btn-sm" disabled>Locked until Step 1</button>
-              </div>
-            </div>
-            <div class="path-step">
-              <div class="step-marker">3</div>
-              <div class="step-body">
-                <div class="step-source">Compass AI</div>
-                <div class="step-title">Compass Work Simulation</div>
-                <div class="step-desc">Evaluates real-world practical execution.</div>
-                <button class="btn btn-outline btn-sm" disabled>Locked until Step 2</button>
-              </div>
-            </div>
-          </div>
+          <div class="path-track" id="pathTrack"></div>
         </div>
 
         <div class="span-4 stack">
           <div class="card card-pad">
             <h2 style="font-size:15px;">Target Outcome</h2>
             <div class="flex items-center gap-12" style="margin:14px 0 6px;">
-              <div><div class="mono" style="font-size:24px;font-weight:600;color:var(--red);">52</div><div class="text-sm text-soft">Current</div></div>
+              <div><div class="mono" style="font-size:24px;font-weight:600;color:var(--red);" id="targetCurrent">—</div><div class="text-sm text-soft">Current</div></div>
               <div class="score-arrow">→</div>
-              <div><div class="mono" style="font-size:24px;font-weight:600;color:var(--green);">75</div><div class="text-sm text-soft">Target</div></div>
+              <div><div class="mono" style="font-size:24px;font-weight:600;color:var(--green);" id="targetRequired">—</div><div class="text-sm text-soft">Target</div></div>
             </div>
-            <div class="bar-track"><div class="bar-fill gold" data-target="69" style="width:0"></div></div>
-            <p class="text-sm text-soft" style="margin-top:10px;">Estimated 3–4 weeks to close the gap at current pace.</p>
-          </div>
-
-          <div class="card card-pad">
-            <h2 style="font-size:15px;">Why this sequence?</h2>
-            <p class="text-sm text-soft" style="margin-top:8px;">
-              Compass AI ordered these steps by dependency: foundational SQL skills first, followed by applied statistical processing, then a practical simulation to validate on-the-job readiness.
-            </p>
+            <div class="bar-track"><div class="bar-fill gold" id="targetBar" data-target="0" style="width:0"></div></div>
+            <p class="text-sm text-soft" style="margin-top:10px;" id="targetNote"></p>
           </div>
         </div>
       </div>
 
       <div class="page-actions">
         <a href="/passport" class="btn btn-ghost">← Back to Passport</a>
-        <a href="/course-detail" class="btn btn-primary">Continue to Course Detail →</a>
+        <a href="/course-detail" class="btn btn-primary" id="continueLink">Continue to Course Detail →</a>
       </div>
 
     </main>
@@ -123,5 +88,6 @@
 
 <script src="/static/js/auth.js"></script>
 <script src="/static/js/main.js"></script>
+<script src="/static/js/path.js"></script>
 </body>
 </html>
