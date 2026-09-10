@@ -2,10 +2,15 @@
 1. weight questions per domain by that domain's competency gap size
 2. retrieve the most relevant PDF passages per domain (RAG)
 3. prompt the LLM for strict-JSON MoSPI workplace scenario questions with page citations
+
+A second, LLM-free path (generate_gap_weighted_quiz_from_bank) builds the same
+shape of quiz straight from the pre-authored mock/practice_assessments.csv
+question bank, so quizzes work even without a PDF upload or an LLM API key.
 """
 from typing import List, Dict, Any
 from app.services.rag_service import RAGSession
 from app.services.llm_client import complete_json
+from app.adapters import mock_dataset_loader
 
 TOTAL_QUESTIONS = 10
 
@@ -98,3 +103,69 @@ def generate_gap_weighted_quiz(pdf_bytes: bytes, source_name: str, gaps: List[Di
         q["id"] = idx
 
     return {"domain_weighting": weighting, "questions": all_questions}
+
+
+def _bank_question_to_internal(q: Dict[str, Any], domain: str) -> Dict[str, Any]:
+    return {
+        "domain": domain,
+        "scenario": q["scenario"],
+        "question": q["question"],
+        "options": [{"label": k, "text": v} for k, v in q["options"].items()],
+        "correct_option": q["correct_option"],
+        "explanation": q["explanation"],
+        "citation": f"Practice Bank \u2014 {q['course_id']} ({q['assessment_id']})",
+        "difficulty": q.get("difficulty", "medium"),
+    }
+
+
+def _bank_available_count(domain: str, exclude_keys: set) -> int:
+    return len([
+        q for q in mock_dataset_loader.load_practice_assessments()
+        if q["domain"] == domain and (q["scenario"], q["question"]) not in exclude_keys
+    ])
+
+
+def generate_gap_weighted_quiz_from_bank(gaps: List[Dict[str, Any]], total: int = TOTAL_QUESTIONS) -> Dict[str, Any]:
+    """Builds a gap-weighted quiz entirely from mock/practice_assessments.csv --
+    no PDF upload and no LLM call required. Same allocation logic as the
+    PDF/LLM path (compute_domain_weighting), but sources real, pre-authored
+    questions instead of generating them. If a domain's target count exceeds
+    what the bank has available, the shortfall is reallocated to other
+    domains that still have spare questions rather than failing outright."""
+    if not mock_dataset_loader.practice_bank_available():
+        return {"domain_weighting": {}, "questions": []}
+
+    weighting = compute_domain_weighting(gaps, total)
+    exclude_keys: set = set()
+    final_weighting: Dict[str, int] = {}
+    all_questions: List[Dict[str, Any]] = []
+    shortfall = 0
+
+    for domain, count in weighting.items():
+        available = _bank_available_count(domain, exclude_keys)
+        take = min(count, available)
+        picked = mock_dataset_loader.pick_bank_questions(domain, take, exclude_keys)
+        exclude_keys.update((q["scenario"], q["question"]) for q in picked)
+        final_weighting[domain] = take
+        shortfall += count - take
+        all_questions.extend(_bank_question_to_internal(q, domain) for q in picked)
+
+    # Reallocate any shortfall to domains that still have spare bank questions.
+    if shortfall > 0:
+        for domain in list(final_weighting.keys()):
+            if shortfall <= 0:
+                break
+            available = _bank_available_count(domain, exclude_keys)
+            extra = min(shortfall, available)
+            if extra <= 0:
+                continue
+            picked = mock_dataset_loader.pick_bank_questions(domain, extra, exclude_keys)
+            exclude_keys.update((q["scenario"], q["question"]) for q in picked)
+            final_weighting[domain] += extra
+            shortfall -= extra
+            all_questions.extend(_bank_question_to_internal(q, domain) for q in picked)
+
+    for idx, q in enumerate(all_questions, start=1):
+        q["id"] = idx
+
+    return {"domain_weighting": {k: v for k, v in final_weighting.items() if v > 0}, "questions": all_questions}

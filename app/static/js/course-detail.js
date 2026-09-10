@@ -47,6 +47,9 @@ async function kcLoadCourseDetail () {
   document.getElementById('courseSourceBadge').textContent = course.source;
   document.getElementById('courseDomainBadge').textContent = KC_DOMAIN_LABELS_CD[course.domain] || course.domain;
   document.getElementById('launchLink').href = course.launch_url || '#';
+  document.getElementById('continueLearningLink').href = `/learning?id=${encodeURIComponent(course.id)}`;
+  const continueToLearningLink = document.getElementById('continueToLearningLink');
+  if (continueToLearningLink) continueToLearningLink.href = `/learning?id=${encodeURIComponent(course.id)}`;
   kcLoadWhatYoullLearn(course);
 
   // Show the real gap this course's domain addresses for this user.
@@ -77,6 +80,26 @@ async function kcLoadCourseDetail () {
 
 async function kcLoadWhatYoullLearn (course) {
   const el = document.getElementById('whatYoullLearn');
+
+  // Prefer real, per-module learning outcomes from the mock dataset over an
+  // AI-guessed summary -- deterministic, grounded, and actually specific.
+  try {
+    const res = await kcAuthFetch(`/recommendations/course/${encodeURIComponent(course.id)}/modules`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.modules && data.modules.length) {
+        el.innerHTML = `<ul style="margin:0; padding-left:18px;">${
+          data.modules.map((m) => `<li style="margin-bottom:6px;">${m.module_learning_outcome}</li>`).join('')
+        }</ul>`;
+        return;
+      }
+    }
+  } catch (e) {
+    // fall through to the AI-generated summary below
+  }
+
+  // No bundled module content for this course -- ask Compass AI for a short summary instead,
+  // clearly grounded only in the course's own title/description.
   const context = `Course: ${course.title}. Description: ${course.description || 'No description given.'}`;
   try {
     const res = await kcAuthFetch('/compass-ai/ask', {

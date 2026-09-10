@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learning + Compass AI — Karmayogi Compass</title>
+<title>Learning — Karmayogi Compass</title>
 <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -22,7 +22,7 @@
         <li><a class="nav-item" href="/passport"><span class="n">3</span> Passport</a></li>
         <li><a class="nav-item" href="/path"><span class="n">4</span> Learning Path</a></li>
         <li><a class="nav-item" href="/course-detail"><span class="n">5</span> Course Detail</a></li>
-        <li><a class="nav-item active" href="/learning"><span class="n">6</span> Learning + AI</a></li>
+        <li><a class="nav-item active" href="/learning"><span class="n">6</span> Learning</a></li>
         <li><a class="nav-item" href="/assessment"><span class="n">7</span> Assessment</a></li>
         <li><a class="nav-item" href="/results"><span class="n">8</span> Results</a></li>
       </ul>
@@ -56,10 +56,27 @@
         <!-- Content viewer -->
         <div class="span-7 stack">
           <div class="card card-pad" id="courseCard">
-            <span class="badge outline" id="courseDomainBadge" style="margin-bottom:12px;">Loading…</span>
-            <h2 style="font-size:19px;" id="courseTitle">Loading your current course…</h2>
-            <p class="text-sm text-soft" style="margin:10px 0 16px;" id="courseDescription"></p>
+            <div class="card-header"><h2>Learning</h2></div>
+            <span class="badge outline" id="courseDomainBadge" style="margin:10px 0 8px;">Loading…</span>
+            <h3 style="font-size:17px; margin-top:4px;" id="courseTitle">Loading your current course…</h3>
+            <p class="text-sm text-soft" style="margin:8px 0 6px;" id="courseDescription"></p>
             <p class="text-sm text-soft" id="courseSourceLine"></p>
+          </div>
+
+          <div class="card card-pad" id="moduleViewerCard" hidden>
+            <div class="card-header"><h2>Course Modules</h2></div>
+            <p class="text-sm text-soft" style="margin:6px 0 14px;">
+              Real module content from the mock learning corpus. Pick a module — Compass AI on the
+              right will ground its answers in whatever you're currently reading.
+            </p>
+            <div class="grid grid-12" style="gap:18px;">
+              <div class="span-4">
+                <div class="module-list" id="moduleList"></div>
+              </div>
+              <div class="span-8">
+                <div class="module-content" id="moduleContent"></div>
+              </div>
+            </div>
           </div>
 
           <div class="flex justify-between items-center">

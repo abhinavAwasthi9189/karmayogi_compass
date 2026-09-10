@@ -1,4 +1,5 @@
 """Structured fixtures standing in for live iGOT Karmayogi + MoSPI competency data."""
+from app.adapters import mock_dataset_loader as _loader
 
 # Required competency levels (0-100 scale) by designation. Falls back to DEFAULT.
 REQUIRED_LEVELS_BY_DESIGNATION = {
@@ -18,6 +19,11 @@ REQUIRED_LEVELS_BY_DESIGNATION = {
         "statistical_score": 75, "technical_score": 65, "digital_gov_score": 60, "managerial_score": 55,
     },
 }
+
+# Merge in any designation requirements supplied via mock/mock_data_statistical_analyst.py.
+# Existing keys are overwritten with the override's values; new designations (e.g.
+# "Statistical Analyst") are added. No-op if the mock/ dataset isn't present.
+REQUIRED_LEVELS_BY_DESIGNATION.update(_loader.load_designation_overrides())
 
 DOMAINS = ["statistical_score", "technical_score", "digital_gov_score", "managerial_score"]
 
@@ -67,6 +73,14 @@ MOCK_COURSES = [
      "source": "iGOT Karmayogi", "launch_url": "https://igot.gov.in/course/igot-mgmt-350",
      "description": "Integrity, accountability and decision-making for MoSPI officials."},
 ]
+
+# Extend the curated catalog with courses loaded from mock/rag_learning_corpus_flat.csv,
+# skipping any id collision with the curated list above. No-op if that file isn't present.
+_existing_ids = {c["id"] for c in MOCK_COURSES}
+for _course in _loader.load_courses_from_corpus():
+    if _course["id"] not in _existing_ids:
+        MOCK_COURSES.append(_course)
+        _existing_ids.add(_course["id"])
 
 # Seed users for local demo (password for all: "Karmayogi@123")
 SEED_USERS = [

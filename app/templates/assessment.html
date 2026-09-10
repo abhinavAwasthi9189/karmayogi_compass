@@ -22,7 +22,7 @@
         <li><a class="nav-item" href="/passport"><span class="n">3</span> Passport</a></li>
         <li><a class="nav-item" href="/path"><span class="n">4</span> Learning Path</a></li>
         <li><a class="nav-item" href="/course-detail"><span class="n">5</span> Course Detail</a></li>
-        <li><a class="nav-item" href="/learning"><span class="n">6</span> Learning + AI</a></li>
+        <li><a class="nav-item" href="/learning"><span class="n">6</span> Learning</a></li>
         <li><a class="nav-item active" href="/assessment"><span class="n">7</span> Assessment</a></li>
         <li><a class="nav-item" href="/results"><span class="n">8</span> Results</a></li>
       </ul>
@@ -51,17 +51,22 @@
 
     <main class="content">
 
-      <!-- Step 1: upload a reference PDF to generate a gap-weighted quiz from -->
+      <!-- Step 1: generate a gap-weighted quiz, either from the built-in practice bank or an uploaded PDF -->
       <div class="card card-pad" id="uploadPanel">
         <h2 style="font-size:16px;">Generate Your Assessment</h2>
         <p class="text-sm text-soft" style="margin:8px 0 16px;">
-          Upload a reference PDF (course material, a circular, a manual — anything relevant to your
-          role). Compass AI builds a 10-question quiz from it, weighted toward your biggest
-          competency gaps, with every question citing the page it came from.
+          Start instantly with the built-in practice question bank, or upload a reference PDF
+          (course material, a circular, a manual) to have Compass AI write fresh questions from it.
+          Either way you get a 10-question quiz weighted toward your biggest competency gaps.
         </p>
+        <div>
+          <button class="btn btn-primary" id="bankGenerateBtn">Use Practice Question Bank →</button>
+        </div>
+        <div class="divider" style="margin:18px 0;"></div>
+        <p class="text-sm text-soft" style="margin-bottom:10px;">Or upload your own reference document:</p>
         <input type="file" id="pdfInput" accept="application/pdf" style="margin-bottom:14px;">
         <div>
-          <button class="btn btn-primary" id="generateBtn">Generate Assessment</button>
+          <button class="btn btn-outline" id="generateBtn">Generate From PDF</button>
         </div>
         <p class="text-sm" id="uploadError" style="color:var(--red); margin-top:12px; display:none;"></p>
         <p class="text-sm text-soft" id="uploadStatus" style="margin-top:12px; display:none;"></p>

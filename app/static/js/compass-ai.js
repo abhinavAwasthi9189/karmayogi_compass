@@ -1,19 +1,26 @@
 // Karmayogi Compass — Compass AI widget.
 // Wires an `.ai-drawer` block to the real /api/v1/compass-ai endpoints.
-// Nothing here is scripted: suggestions and answers both come from the
-// backend (Gemini via LiteLLM), scoped to whatever `context` string the
-// host page passes in (e.g. the current course/module title).
+// Nothing here is scripted: suggestions and answers both come straight from
+// the backend (Gemini via LiteLLM), grounded in whatever `context` string
+// the host page passes in. The host page can call .setContext() to re-ground
+// the assistant when the user switches to a different module, without
+// losing the running conversation.
 
-function kcInitCompassAI (context) {
+function kcInitCompassAI (initialContext, initialLabel) {
   const drawer = document.querySelector('.ai-drawer');
-  if (!drawer) return;
+  if (!drawer) return null;
 
   const thread = drawer.querySelector('.ai-thread');
   const suggestionsEl = drawer.querySelector('.ai-suggestions');
   const input = drawer.querySelector('.ai-input input');
   const sendBtn = drawer.querySelector('.ai-send');
+  const awareEl = document.getElementById('aiAwareOf');
 
-  appendMsg('bot', `Ask me anything about "${context}" — I'll keep answers short and grounded in this module.`);
+  let context = initialContext;
+  let label = initialLabel || initialContext;
+
+  appendMsg('bot', `Ask me anything about "${label}" \u2014 I'll keep answers short and grounded in the real content on the left.`);
+  if (awareEl) awareEl.textContent = `Aware of: ${label}`;
   loadSuggestions();
 
   if (sendBtn && input) {
@@ -29,7 +36,7 @@ function kcInitCompassAI (context) {
 
   async function loadSuggestions () {
     if (!suggestionsEl) return;
-    suggestionsEl.innerHTML = '<span class="ai-chip" style="opacity:.6;">Loading suggestions…</span>';
+    suggestionsEl.innerHTML = '<span class="ai-chip" style="opacity:.6;">Loading suggestions\u2026</span>';
     try {
       const res = await kcAuthFetch('/compass-ai/suggestions', {
         method: 'POST',
@@ -52,7 +59,7 @@ function kcInitCompassAI (context) {
 
   async function handleAsk (question) {
     appendMsg('user', question);
-    const pending = appendMsg('bot', 'Compass AI is thinking…');
+    const pending = appendMsg('bot', 'Compass AI is thinking\u2026');
     try {
       const res = await kcAuthFetch('/compass-ai/ask', {
         method: 'POST',
@@ -65,6 +72,8 @@ function kcInitCompassAI (context) {
       pending.querySelector('.msg-text').textContent = data.answer;
     } catch (e) {
       pending.querySelector('.msg-text').textContent = 'Something went wrong reaching Compass AI. Please try again.';
+    } finally {
+      thread.scrollTop = thread.scrollHeight;
     }
   }
 
@@ -79,4 +88,15 @@ function kcInitCompassAI (context) {
     thread.scrollTop = thread.scrollHeight;
     return div;
   }
+
+  return {
+    // Re-grounds the assistant in a new module/course without resetting the thread.
+    setContext (newContext, newLabel) {
+      context = newContext;
+      label = newLabel || newContext;
+      if (awareEl) awareEl.textContent = `Aware of: ${label}`;
+      appendMsg('bot', `Now focused on "${label}". Ask me anything about it.`);
+      loadSuggestions();
+    },
+  };
 }
