@@ -6,8 +6,11 @@ Two capabilities, both scoped to "what the user is currently learning"
 1. get_quick_suggestions(context) -> 3 short candidate questions the learner
    could tap instead of typing (shown above the chat input, before they've
    typed anything).
-2. answer_question(context, question) -> a short (<= ~60 words) grounded
-   answer to whatever the learner actually asked.
+2. answer_question(context, question) -> a short (<= ~40 words) answer to
+   whatever the learner actually asked, using Gemini's own knowledge. The
+   `context` tells the model what topic is being taught -- it is NOT a hard
+   boundary the model must stay inside, so it doesn't hedge or refuse just
+   because the passed-in description is brief.
 
 Both go through the same LiteLLM/Gemini wrapper used by the quiz pipeline
 (`app/services/llm_client.py`), so no second LLM integration is introduced.
@@ -22,7 +25,7 @@ from app.services.llm_client import complete_json
 
 settings = get_settings()
 
-MAX_ANSWER_WORDS = 60
+MAX_ANSWER_WORDS = 40
 
 SUGGEST_SYSTEM_PROMPT = """You generate short quick-reply suggestions for a learning assistant
 called Compass AI, used by MoSPI (Indian government statistics) officials while they study a
@@ -31,10 +34,14 @@ course module. Given the current module context, respond with ONLY a JSON object
 questions a learner on this exact module would plausibly want to ask. No prose, no markdown fences."""
 
 ASK_SYSTEM_PROMPT = f"""You are Compass AI, a contextual learning assistant embedded in a course
-page for MoSPI (Indian government statistics) officials on the iGOT Karmayogi platform. Answer the
-learner's question using ONLY the module context given to you. Keep the answer short and direct —
-strictly under {MAX_ANSWER_WORDS} words, no filler, no restating the question, plain text only
-(no markdown headers or bullet lists unless truly necessary)."""
+page for MoSPI (Indian government statistics) officials on the iGOT Karmayogi platform. You will be
+told what topic/module the learner is currently studying, and what they just asked. Answer the
+question properly and correctly using your own general knowledge — the module topic is background
+to tell you what they're learning, not a restriction on what you're allowed to say. Never say things
+like "the context doesn't specify" or refuse to answer because the topic description was brief;
+just answer the question well, the way a good tutor would.
+Keep the answer very short and direct — strictly under {MAX_ANSWER_WORDS} words, no filler, no
+restating the question, plain text only (no markdown headers or bullet lists unless truly necessary)."""
 
 
 def get_quick_suggestions(context: str) -> List[str]:
@@ -65,9 +72,9 @@ def answer_question(context: str, question: str) -> str:
             model=settings.LLM_MODEL,
             messages=[
                 {"role": "system", "content": ASK_SYSTEM_PROMPT},
-                {"role": "user", "content": f"Module context: {context}\n\nLearner question: {question}"},
+                {"role": "user", "content": f"We are teaching: {context}\n\nThe learner asked: {question}"},
             ],
-            max_tokens=180,
+            max_tokens=120,
             temperature=0.4,
         )
         text = response["choices"][0]["message"]["content"].strip()

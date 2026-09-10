@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import hashlib
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +18,24 @@ settings = get_settings()
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+
+def _compute_asset_version() -> str:
+    """Hashes every static file's path + last-modified time into a short
+    version string, appended as ?v=... on every CSS/JS tag (see templates).
+    This changes automatically whenever a static file is edited, so browsers
+    stop serving a stale cached copy of app.js/style.css after a deploy --
+    no manual version bump required."""
+    static_dir = BASE_DIR / "static"
+    parts = []
+    for p in sorted(static_dir.rglob("*")):
+        if p.is_file():
+            parts.append(f"{p}:{p.stat().st_mtime_ns}")
+    digest = hashlib.md5("".join(parts).encode()).hexdigest()
+    return digest[:10]
+
+
+ASSET_VERSION = _compute_asset_version()
 
 
 @asynccontextmanager
@@ -74,7 +93,7 @@ def root():
 
 def _make_page_route(template_name: str):
     def _route(request: Request):
-        return templates.TemplateResponse(request, template_name, {})
+        return templates.TemplateResponse(request, template_name, {"ASSET_VERSION": ASSET_VERSION})
     return _route
 
 
