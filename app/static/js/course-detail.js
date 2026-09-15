@@ -88,8 +88,8 @@ async function kcLoadWhatYoullLearn (course) {
     if (res.ok) {
       const data = await res.json();
       if (data.modules && data.modules.length) {
-        el.innerHTML = `<ul style="margin:0; padding-left:18px;">${
-          data.modules.map((m) => `<li style="margin-bottom:6px;">${m.module_learning_outcome}</li>`).join('')
+        el.innerHTML = `<ul>${
+          data.modules.map((m) => `<li>${m.module_learning_outcome}</li>`).join('')
         }</ul>`;
         return;
       }

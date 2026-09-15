@@ -1,7 +1,8 @@
 // Karmayogi Compass — Assessment page.
-// Real flow: upload a PDF -> POST /quiz/generate -> answer each question
-// (Previous/Next actually change which question is shown) -> POST /quiz/submit
-// -> hand the real result off to the results page via sessionStorage.
+// Real flow: generate a gap-weighted quiz from the built-in practice question
+// bank -> POST /quiz/generate -> answer each question (Previous/Next actually
+// change which question is shown) -> POST /quiz/submit -> hand the real
+// result off to the results page via sessionStorage.
 
 let kcAssessmentId = null;
 let kcQuestions = [];
@@ -11,46 +12,31 @@ let kcCurrentIndex = 0;
 function kcEl (id) { return document.getElementById(id); }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const generateBtn = kcEl('generateBtn');
   const bankGenerateBtn = kcEl('bankGenerateBtn');
   const prevBtn = kcEl('quizPrev');
   const nextBtn = kcEl('quizNext');
   const submitBtn = kcEl('quizSubmit');
 
-  generateBtn.addEventListener('click', () => kcGenerateQuiz({ fromBank: false }));
-  bankGenerateBtn.addEventListener('click', () => kcGenerateQuiz({ fromBank: true }));
+  bankGenerateBtn.addEventListener('click', kcGenerateQuiz);
   prevBtn.addEventListener('click', () => kcRenderQuestion(kcCurrentIndex - 1));
   nextBtn.addEventListener('click', () => kcRenderQuestion(kcCurrentIndex + 1));
   submitBtn.addEventListener('click', kcSubmitQuiz);
 });
 
-async function kcGenerateQuiz ({ fromBank }) {
+async function kcGenerateQuiz () {
   const user = kcGetUser();
-  const pdfInput = kcEl('pdfInput');
   const errorEl = kcEl('uploadError');
   const statusEl = kcEl('uploadStatus');
-  const generateBtn = kcEl('generateBtn');
   const bankGenerateBtn = kcEl('bankGenerateBtn');
-  const activeBtn = fromBank ? bankGenerateBtn : generateBtn;
-  const activeBtnLabel = fromBank ? 'Use Practice Question Bank \u2192' : 'Generate From PDF';
 
   errorEl.style.display = 'none';
-  if (!fromBank && (!pdfInput.files || !pdfInput.files[0])) {
-    errorEl.textContent = 'Please choose a PDF file first.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  [generateBtn, bankGenerateBtn].forEach((b) => b.setAttribute('disabled', 'true'));
-  activeBtn.textContent = fromBank ? 'Building quiz\u2026' : 'Generating\u2026';
+  bankGenerateBtn.setAttribute('disabled', 'true');
+  bankGenerateBtn.textContent = 'Building quiz\u2026';
   statusEl.style.display = 'block';
-  statusEl.textContent = fromBank
-    ? 'Selecting questions from the practice bank, weighted to your gaps\u2026'
-    : 'Reading the document and building gap-weighted questions \u2014 this can take up to a minute\u2026';
+  statusEl.textContent = 'Selecting questions from the practice bank, weighted to your gaps\u2026';
 
   const formData = new FormData();
   formData.append('user_id', String(user.user_id));
-  if (!fromBank) formData.append('file', pdfInput.files[0]);
 
   try {
     const res = await kcAuthFetch('/quiz/generate', { method: 'POST', body: formData });
@@ -69,8 +55,7 @@ async function kcGenerateQuiz ({ fromBank }) {
     errorEl.textContent = err.message || 'Something went wrong generating the assessment.';
     errorEl.style.display = 'block';
   } finally {
-    [generateBtn, bankGenerateBtn].forEach((b) => b.removeAttribute('disabled'));
-    generateBtn.textContent = 'Generate From PDF';
+    bankGenerateBtn.removeAttribute('disabled');
     bankGenerateBtn.textContent = 'Use Practice Question Bank \u2192';
     statusEl.style.display = 'none';
   }
