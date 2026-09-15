@@ -17,7 +17,7 @@ Both go through the same LiteLLM/Gemini wrapper used by the quiz pipeline
 If the LLM call fails (e.g. GEMINI_API_KEY not set), callers get a clear,
 honest fallback message instead of a fabricated answer.
 """
-from typing import List
+from typing import List, Optional
 import litellm
 
 from app.config import get_settings
@@ -26,6 +26,7 @@ from app.services.llm_client import complete_json
 settings = get_settings()
 
 MAX_ANSWER_WORDS = 40
+MAX_HISTORY_TURNS = 6  # keeps the prompt small while still allowing follow-up questions
 
 SUGGEST_SYSTEM_PROMPT = """You generate short quick-reply suggestions for a learning assistant
 called Compass AI, used by MoSPI (Indian government statistics) officials while they study a
@@ -60,7 +61,7 @@ def get_quick_suggestions(context: str) -> List[str]:
     ]
 
 
-def answer_question(context: str, question: str) -> str:
+def answer_question(context: str, question: str, history: Optional[List[str]] = None) -> str:
     if not settings.GEMINI_API_KEY:
         return (
             "Compass AI isn't fully set up yet — add a GEMINI_API_KEY in your .env to enable "
@@ -68,12 +69,21 @@ def answer_question(context: str, question: str) -> str:
             "facilitator."
         )
     try:
+        messages = [{"role": "system", "content": ASK_SYSTEM_PROMPT}]
+        # `history` is a flat alternating list of prior turns (user, assistant, user, ...)
+        # so follow-ups like "what about the second one?" resolve instead of losing context.
+        trimmed = list(history or [])
+        if len(trimmed) > MAX_HISTORY_TURNS:
+            # trim on an even boundary so the window still opens on a user turn
+            trimmed = trimmed[-(MAX_HISTORY_TURNS - MAX_HISTORY_TURNS % 2):]
+        for index, turn in enumerate(trimmed):
+            messages.append({"role": "user" if index % 2 == 0 else "assistant", "content": str(turn)})
+        messages.append(
+            {"role": "user", "content": f"We are teaching: {context}\n\nThe learner asked: {question}"}
+        )
         response = litellm.completion(
             model=settings.LLM_MODEL,
-            messages=[
-                {"role": "system", "content": ASK_SYSTEM_PROMPT},
-                {"role": "user", "content": f"We are teaching: {context}\n\nThe learner asked: {question}"},
-            ],
+            messages=messages,
             max_tokens=120,
             temperature=0.4,
         )

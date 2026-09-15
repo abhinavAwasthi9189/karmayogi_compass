@@ -87,7 +87,10 @@ SEED_USERS = [
     {"name": "Aditi Sharma", "email": "aditi.sharma@mospi.gov.in", "role": "official",
      "department": "NSSO", "designation": "Statistical Officer",
      "scores": {"statistical_score": 62, "technical_score": 40, "digital_gov_score": 55, "managerial_score": 35}},
-    {"name": "Ravi Kumar", "email": "ravi.kumar@mospi.gov.in", "role": "admin",
+    {"name": "Ravi Kishan", "email": "ravi.kishan@mospi.gov.in", "role": "admin",
+     # previously seeded as "Ravi Kumar" / ravi.kumar@mospi.gov.in — kept so existing
+     # local databases get migrated in place rather than growing a duplicate account
+     "legacy_emails": ["ravi.kumar@mospi.gov.in"],
      "department": "CSO", "designation": "Director",
      "scores": {"statistical_score": 78, "technical_score": 58, "digital_gov_score": 66, "managerial_score": 70}},
     {"name": "Priya Iyer", "email": "priya.iyer@mospi.gov.in", "role": "official",

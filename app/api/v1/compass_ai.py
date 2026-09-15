@@ -20,4 +20,4 @@ def suggest(payload: CompassSuggestRequest, current_user: User = Depends(get_cur
 @router.post("/ask", response_model=CompassAskResponse)
 def ask(payload: CompassAskRequest, current_user: User = Depends(get_current_user)):
     """A short, context-grounded answer to the learner's actual question."""
-    return CompassAskResponse(answer=answer_question(payload.context, payload.question))
+    return CompassAskResponse(answer=answer_question(payload.context, payload.question, payload.history))

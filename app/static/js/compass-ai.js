@@ -18,6 +18,9 @@ function kcInitCompassAI (initialContext, initialLabel) {
 
   let context = initialContext;
   let label = initialLabel || initialContext;
+  // Flat alternating transcript (user, bot, user, bot, ...) sent with each ask so
+  // follow-up questions keep their referent.
+  let history = [];
 
   appendMsg('bot', `Ask me anything about "${label}" \u2014 I'll keep answers short and grounded in the real content on the left.`);
   if (awareEl) awareEl.textContent = `Aware of: ${label}`;
@@ -64,12 +67,13 @@ function kcInitCompassAI (initialContext, initialLabel) {
       const res = await kcAuthFetch('/compass-ai/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ context, question }),
+        body: JSON.stringify({ context, question, history: history.slice(-6) }),
       });
       const data = res.ok
         ? await res.json()
         : { answer: 'Something went wrong reaching Compass AI. Please try again.' };
       pending.querySelector('.msg-text').textContent = data.answer;
+      history.push(question, data.answer);
     } catch (e) {
       pending.querySelector('.msg-text').textContent = 'Something went wrong reaching Compass AI. Please try again.';
     } finally {
@@ -94,6 +98,7 @@ function kcInitCompassAI (initialContext, initialLabel) {
     setContext (newContext, newLabel) {
       context = newContext;
       label = newLabel || newContext;
+      history = [];
       if (awareEl) awareEl.textContent = `Aware of: ${label}`;
       appendMsg('bot', `Now focused on "${label}". Ask me anything about it.`);
       loadSuggestions();
