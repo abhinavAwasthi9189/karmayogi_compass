@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — Karmayogi Compass</title>
+<link rel="stylesheet" href="/static/css/style.css?v={{ ASSET_VERSION }}">
+</head>
+<body>
+
+<div class="login-shell">
+
+  <!-- Visual / brand side -->
+  <aside class="login-visual">
+    <div class="login-visual-content">
+      <div class="flex items-center gap-12">
+        <div class="brand-mark" style="width:40px;height:40px;font-size:17px;">KC</div>
+        <div class="brand-name" style="font-size:18px;">Karmayogi Compass
+          <span>Ministry of Statistics &amp; Programme Implementation</span>
+        </div>
+      </div>
+      <h1 class="login-tagline">From <span class="accent">competency</span><br>to capability.</h1>
+      <p class="text-sm" style="color:#a9b6d1; max-width:400px; margin-top:14px;">
+        Learn exactly what your role demands — mapped, measured and improved through iGOT Karmayogi.
+      </p>
+    </div>
+    <div class="login-stats">
+      <div class="login-stat"><b>4,120+</b><span>Officers Onboarded</span></div>
+      <div class="login-stat"><b>18</b><span>Ministries Covered</span></div>
+      <div class="login-stat"><b>92%</b><span>Path Completion</span></div>
+    </div>
+  </aside>
+
+  <!-- Form side -->
+  <section class="login-form-side">
+    <div style="max-width:340px; margin:0 auto; width:100%;">
+      <div class="login-form-header">
+        <div class="login-emblem">◈</div>
+        <h1 style="font-size:22px;">Sign in to Compass</h1>
+        <p class="text-soft text-sm" style="margin-top:4px;">Official Government ID required for access.</p>
+      </div>
+
+      <form id="loginForm" autocomplete="off">
+        <div class="field">
+          <label for="govId">Official Government ID / Email</label>
+          <input type="text" id="govId" name="govId" placeholder="aditi.sharma@mospi.gov.in">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="••••••••••">
+          <span class="field-hint"><a href="#" class="btn-ghost" style="font-size:11.5px;">Forgot password?</a></span>
+        </div>
+
+        <p id="loginError" class="text-sm" style="color:var(--red,#B85443); display:none; margin:-4px 0 10px;"></p>
+
+        <button type="submit" id="loginSubmit" class="btn btn-primary btn-block" style="margin-top:6px;">
+          Sign In → Dashboard
+        </button>
+
+        <div class="or-divider">or continue with</div>
+
+        <button type="button" class="btn btn-outline btn-block" disabled title="Not wired up in this prototype">
+          Login with Parichay (SSO)
+        </button>
+      </form>
+
+      <p class="text-sm text-soft" style="margin-top:26px; text-align:center;">
+        Having trouble signing in? Contact your Nodal Officer or the iGOT Karmayogi help desk.
+      </p>
+      <p class="text-sm text-soft" style="margin-top:10px; text-align:center;">
+        New here? <a href="/signup" class="btn-ghost" style="font-size:13px;">Create an account →</a>
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<script src="/static/js/auth.js?v={{ ASSET_VERSION }}"></script>
+</body>
+</html>
