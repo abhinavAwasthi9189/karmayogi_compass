@@ -11,10 +11,11 @@
   --navy-800: #1B2C4C;
   --navy-700: #223A63;
   --navy-600: #2C4A7B;
-  --gold: #C98A2E;
-  --gold-hover: #DA9938;
-  --gold-soft: #F3E2C1;
-  --gold-ink: #7A4F12;
+  --gold: #B0803A;
+  --gold-hover: #BE8E47;
+  --gold-dark: #93692B;
+  --gold-soft: #EFDFC2;
+  --gold-ink: #6E4E1D;
   --bg: #F2F2EA;
   --card: #FFFFFF;
   --green: #3B7368;
@@ -129,7 +130,7 @@ img{ max-width:100%; display:block; }
 .brand-mark{
   width:34px; height:34px;
   border-radius:var(--radius-xs);
-  background:linear-gradient(155deg, var(--gold-hover), #A8701F);
+  background:linear-gradient(155deg, var(--gold-hover), var(--gold-dark));
   display:flex; align-items:center; justify-content:center;
   color:var(--navy);
   font-family:'Space Grotesk',sans-serif;
@@ -185,7 +186,7 @@ img{ max-width:100%; display:block; }
   flex:none;
 }
 .nav-item:hover{ background:rgba(255,255,255,0.055); color:#fff; }
-.nav-item.active{ background:rgba(201,138,46,0.14); color:#fff; border-left-color:var(--gold); }
+.nav-item.active{ background:rgba(176,128,58,0.16); color:#fff; border-left-color:var(--gold); }
 .nav-item.active .n{ background:var(--gold); color:var(--navy); }
 .nav-item.disabled{ opacity:.35; pointer-events:none; }
 
@@ -534,7 +535,7 @@ tbody tr:hover{ background:#FAFAF5; }
 }
 .ai-orb{
   width:26px; height:26px; border-radius:50%;
-  background:radial-gradient(circle at 30% 30%, #F0C576, var(--gold) 70%);
+  background:radial-gradient(circle at 30% 30%, #D9B37B, var(--gold) 70%);
   flex:none;
   box-shadow:0 0 0 4px rgba(255,255,255,0.08);
 }
