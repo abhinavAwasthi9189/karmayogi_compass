@@ -17,13 +17,16 @@ Both go through the same LiteLLM/Gemini wrapper used by the quiz pipeline
 If the LLM call fails (e.g. GEMINI_API_KEY not set), callers get a clear,
 honest fallback message instead of a fabricated answer.
 """
+import logging
 from typing import List, Optional
+
 import litellm
 
 from app.config import get_settings
-from app.services.llm_client import complete_json
+from app.services.llm_client import complete_json, sampling_kwargs, describe_llm_error, extract_text
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 MAX_ANSWER_WORDS = 40
 MAX_HISTORY_TURNS = 6  # keeps the prompt small while still allowing follow-up questions
@@ -47,12 +50,14 @@ restating the question, plain text only (no markdown headers or bullet lists unl
 
 def get_quick_suggestions(context: str) -> List[str]:
     try:
-        result = complete_json(SUGGEST_SYSTEM_PROMPT, f"Current module: {context}", max_tokens=200)
+        result = complete_json(SUGGEST_SYSTEM_PROMPT, f"Current module: {context}", max_tokens=400)
         suggestions = result.get("suggestions") if isinstance(result, dict) else None
         if isinstance(suggestions, list) and suggestions:
             return [str(s).strip() for s in suggestions[:3] if str(s).strip()]
-    except Exception:
-        pass
+    except Exception as e:
+        # Logged rather than swallowed: the chips degrade gracefully, so without this a
+        # misconfigured model looks like "it works" until /ask fails too.
+        logger.warning("Compass AI suggestions fell back to defaults - %s", describe_llm_error(e))
     # Fallback: generic, still module-aware, no LLM required.
     return [
         f"Give me a quick summary of {context}",
@@ -84,10 +89,14 @@ def answer_question(context: str, question: str, history: Optional[List[str]] = 
         response = litellm.completion(
             model=settings.LLM_MODEL,
             messages=messages,
-            max_tokens=120,
-            temperature=0.4,
+            # 40 words of visible answer is small, but on Gemini 3.x the thinking
+            # budget is drawn from this same number (see sampling_kwargs) — give it
+            # headroom even with reasoning turned down, rather than tuning this to
+            # the bare minimum for the old non-reasoning 2.x models.
+            max_tokens=500,
+            **sampling_kwargs(),
         )
-        text = response["choices"][0]["message"]["content"].strip()
+        text = extract_text(response)
         return text or "I couldn't generate an answer for that just now — try rephrasing your question."
     except Exception as e:
-        return f"Compass AI couldn't reach the model just now ({type(e).__name__}). Please try again in a moment."
+        return f"Compass AI couldn't answer that — {describe_llm_error(e)}"

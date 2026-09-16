@@ -119,9 +119,26 @@ only access their own `user_id` on skill-gap/recommendations/quiz endpoints (403
 |---|---|
 | `IGOT_MODE` | `mock` (bundled fixtures) or `live` (real iGOT HTTP endpoints) |
 | `IGOT_BASE_URL`, `IGOT_API_KEY` | used only when `IGOT_MODE=live` |
-| `LLM_MODEL` | LiteLLM model string, e.g. `gemini/gemini-1.5-flash` |
+| `LLM_MODEL` | LiteLLM model string, e.g. `gemini/gemini-3.6-flash` (see note below) |
 | `GEMINI_API_KEY` | your Gemini API key |
 | `SECRET_KEY` | JWT signing secret — change for anything beyond local demo |
+
+## Choosing an LLM model
+
+`LLM_MODEL` defaults to `gemini/gemini-3.6-flash`. This was moved off `gemini/gemini-2.5-flash`
+in v0.9: the 2.5 family is scheduled for shutdown on **16 October 2026** and has already returned
+intermittent 404s ahead of that date, which surface in the app as
+`NotFoundError` from LiteLLM.
+
+If you see an error mentioning the model was rejected by the provider, it almost always means the
+model string is retired or renamed rather than a transient outage — check
+<https://ai.google.dev/gemini-api/docs/models> for the current list and update `LLM_MODEL`.
+Using a `-latest` alias (e.g. `gemini/gemini-flash-latest`) avoids pinning to a version that gets
+retired, at the cost of the model changing under you.
+
+Note that Gemini 3.x deprecated the `temperature`, `top_p` and `top_k` sampling parameters.
+`llm_client.sampling_kwargs()` drops them automatically for 3.x and newer models and keeps sending
+them for older families, so switching `LLM_MODEL` between generations needs no other code change.
 
 ## Notes / known limitations
 

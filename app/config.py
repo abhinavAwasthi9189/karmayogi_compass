@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     IGOT_API_KEY: str = ""
 
     LLM_PROVIDER: str = "gemini"
-    LLM_MODEL: str = "gemini/gemini-2.5-flash"
+    LLM_MODEL: str = "gemini/gemini-3.6-flash"
     GEMINI_API_KEY: str = ""
 
 
