@@ -20,6 +20,17 @@ class Settings(BaseSettings):
     LLM_MODEL: str = "gemini/gemini-3.6-flash"
     GEMINI_API_KEY: str = ""
 
+    # Comma-separated list of allowed frontend origins, e.g.
+    # "https://myapp.vercel.app,https://mycustomdomain.com". Defaults to "*"
+    # for local dev -- set explicitly in production.
+    CORS_ORIGINS: str = "*"
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        if self.CORS_ORIGINS.strip() == "*":
+            return ["*"]
+        return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
+
 
 @lru_cache
 def get_settings() -> Settings:

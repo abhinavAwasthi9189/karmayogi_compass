@@ -140,6 +140,30 @@ Note that Gemini 3.x deprecated the `temperature`, `top_p` and `top_k` sampling 
 `llm_client.sampling_kwargs()` drops them automatically for 3.x and newer models and keeps sending
 them for older families, so switching `LLM_MODEL` between generations needs no other code change.
 
+## Deploying to Vercel
+
+Vercel auto-detects the FastAPI app at `app/main.py`, so no build config is needed
+beyond what's in this repo (`vercel.json` sets a longer function timeout for the
+Gemini calls in quiz generation / Compass AI).
+
+1. **Switch off SQLite.** Vercel's serverless functions have an ephemeral
+   filesystem, so the bundled `sqlite:///./karmayogi_compass.db` will not persist
+   between requests. Provision a Postgres database (Vercel Postgres, Neon,
+   Supabase, etc.) and set `DATABASE_URL` to it, e.g.
+   `postgresql://user:password@host:5432/dbname`. `psycopg2-binary` (already in
+   `requirements.txt`) makes SQLModel/SQLAlchemy talk to it with no model code
+   changes. `seed_service.py` checks for existing users before creating them, so
+   the three demo accounts seed safely on a fresh Postgres database too.
+2. **Set environment variables** in the Vercel project dashboard (values in
+   `.env` are not deployed): `SECRET_KEY` (don't ship the dev default),
+   `DATABASE_URL`, `GEMINI_API_KEY`, `IGOT_MODE`, and `CORS_ORIGINS` (set to your
+   deployed origin instead of `*` once you have one).
+3. **Deploy** by connecting the Git repo in the Vercel dashboard, or via the CLI:
+   ```bash
+   npm i -g vercel
+   vercel deploy
+   ```
+
 ## Notes / known limitations
 
 - SQLite is used for simplicity; swap `DATABASE_URL` for Postgres in production (SQLModel/SQLAlchemy
