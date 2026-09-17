@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import hashlib
@@ -7,12 +8,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session
 
 from app.config import get_settings
-from app.database import init_db, engine
+from app.database import init_db, engine, write_self_test
 from app.services.seed_service import seed_demo_data
 from app.api.v1 import api_router
+
+logger = logging.getLogger(__name__)
 
 settings = get_settings()
 
@@ -40,9 +44,27 @@ ASSET_VERSION = _compute_asset_version()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()
-    with Session(engine) as session:
-        seed_demo_data(session)
+    """Creates tables and seeds demo users.
+
+    On SQLite this runs against a fresh file each cold start. On Postgres the
+    data persists, so two instances cold-starting at once can race: both see no
+    seed user and both INSERT, and the unique constraint on user.email makes the
+    loser fail. That's benign -- the row exists either way -- so we log and carry
+    on rather than taking the whole app down with it.
+    """
+    try:
+        init_db()
+    except Exception:
+        logger.exception("init_db() failed; continuing so /api/health/db stays reachable")
+
+    try:
+        with Session(engine) as session:
+            seed_demo_data(session)
+    except IntegrityError:
+        logger.warning("Seed data already present (concurrent cold start) - skipping")
+    except Exception:
+        logger.exception("Seeding failed; app will start but demo accounts may be missing")
+
     yield
 
 
@@ -68,6 +90,14 @@ app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="stat
 @app.get("/api/health", tags=["Health"])
 def health_check():
     return {"status": "ok", "service": settings.APP_NAME}
+
+
+@app.get("/api/health/db", tags=["Health"])
+def db_health_check():
+    """Diagnostic: shows which database file is actually in use, whether the
+    configured location was writable, and whether a real write succeeds right
+    now. Use this to confirm a deployment is running the current code."""
+    return write_self_test()
 
 
 # ---------------------------------------------------------------------------
