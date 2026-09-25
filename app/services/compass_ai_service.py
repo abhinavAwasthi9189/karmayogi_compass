@@ -7,10 +7,10 @@ Two capabilities, both scoped to "what the user is currently learning"
    could tap instead of typing (shown above the chat input, before they've
    typed anything).
 2. answer_question(context, question) -> a short (<= ~40 words) answer to
-   whatever the learner actually asked, using Gemini's own knowledge. The
-   `context` tells the model what topic is being taught -- it is NOT a hard
-   boundary the model must stay inside, so it doesn't hedge or refuse just
-   because the passed-in description is brief.
+   whatever the learner actually asked, grounded ONLY in the module content
+   passed in as `context` (the real study_material for the module the
+   learner has open -- see learning.js). If the content doesn't cover the
+   question, the model says so honestly instead of inventing an answer.
 
 Both go through the same LiteLLM/Gemini wrapper used by the quiz pipeline
 (`app/services/llm_client.py`), so no second LLM integration is introduced.
@@ -39,13 +39,13 @@ questions a learner on this exact module would plausibly want to ask. No prose, 
 
 ASK_SYSTEM_PROMPT = f"""You are Compass AI, a contextual learning assistant embedded in a course
 page for MoSPI (Indian government statistics) officials on the iGOT Karmayogi platform. You will be
-told what topic/module the learner is currently studying, and what they just asked. Answer the
-question properly and correctly using your own general knowledge — the module topic is background
-to tell you what they're learning, not a restriction on what you're allowed to say. Never say things
-like "the context doesn't specify" or refuse to answer because the topic description was brief;
-just answer the question well, the way a good tutor would.
+given the study material for the module the learner is currently on, and what they just asked.
+Answer using ONLY the module content provided below as context. If that content does not cover what
+they're asking, say so briefly in one sentence and suggest they check the next module or ask their
+trainer -- do not fill the gap with outside knowledge.
 Keep the answer very short and direct — strictly under {MAX_ANSWER_WORDS} words, no filler, no
-restating the question, plain text only (no markdown headers or bullet lists unless truly necessary)."""
+restating the question, plain text only (no markdown headers or bullet lists unless truly necessary).
+"""
 
 
 def get_quick_suggestions(context: str) -> List[str]:

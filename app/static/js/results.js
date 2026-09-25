@@ -66,6 +66,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (typeof initBars === 'function') initBars();
 
-  // Once shown, clear it so a page refresh doesn't keep replaying a stale result.
-  sessionStorage.removeItem('kc_last_result');
+    const reviewCard = document.getElementById('reviewCard');
+  const reviewList = document.getElementById('reviewList');
+  const reviewToggle = document.getElementById('reviewToggle');
+  if (result.review && result.review.length) {
+    reviewCard.hidden = false;
+    reviewList.innerHTML = '';
+    result.review.forEach((item, idx) => {
+      const block = document.createElement('div');
+      block.style.borderLeft = `3px solid ${item.is_correct ? '#3E6E64' : '#B1503A'}`;
+      block.style.paddingLeft = '12px';
+      const optionsHtml = (item.options || []).map((o) => {
+        const isYours = o.label === item.your_answer;
+        const isCorrect = o.label === item.correct_option;
+        let mark = '';
+        if (isCorrect) mark = ' \u2713';
+        else if (isYours) mark = ' \u2717';
+        return `<div style="${isCorrect ? 'font-weight:600;' : ''}">${o.label}. ${o.text}${mark}</div>`;
+      }).join('');
+      block.innerHTML = `
+        <div class="text-sm text-soft">Q${idx + 1} \u00b7 ${KC_DOMAIN_LABELS_R[item.domain] || item.domain} \u00b7 ${item.is_correct ? 'Correct' : 'Incorrect'}</div>
+        <div style="margin:4px 0;"><i>${item.scenario || ''}</i></div>
+        <div style="font-weight:500;">${item.question}</div>
+        <div style="margin:6px 0;">${optionsHtml}</div>
+        <div class="text-sm">${item.explanation}</div>
+        <div class="text-sm text-soft" style="margin-top:2px;">Source: ${item.citation}</div>
+      `;
+      reviewList.appendChild(block);
+    });
+  }
+  if (reviewToggle) {
+    reviewToggle.addEventListener('click', () => {
+    reviewList.style.display = reviewList.style.display === 'none' ? 'flex' : 'none';
+    });
+  }
 });

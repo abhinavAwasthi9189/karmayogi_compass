@@ -113,8 +113,25 @@ def submit_quiz(
     if assessment.score is not None:
         raise HTTPException(status_code=400, detail="This assessment has already been submitted")
 
+    review = []
+    for i, q in enumerate(assessment.questions):
+        submitted = payload.answers[i] if i < len(payload.answers) else None
+        review.append({
+            "id": q["id"],
+            "domain": q["domain"],
+            "scenario": q["scenario"],
+            "question": q["question"],
+            "options": q["options"],
+            "your_answer": submitted,
+            "correct_option": q["correct_option"],
+            "is_correct": bool(submitted) and submitted.strip().upper() == str(q["correct_option"]).strip().upper(),
+            "explanation": q.get("explanation", ""),
+            "citation": q.get("citation", ""),
+        })
+
     grading = grade_assessment(assessment, payload.answers)
     assessment.answers = payload.answers
+
     assessment.score = grading["score"]
     assessment.domain_breakdown = grading["domain_breakdown"]
     session.add(assessment)
@@ -136,4 +153,5 @@ def submit_quiz(
         domain_breakdown=grading["domain_breakdown"],
         updated_scores=update_result["updated_scores"],
         overall_readiness_index=update_result["overall_readiness_index"],
+        review = review,
     )

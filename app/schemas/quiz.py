@@ -31,6 +31,17 @@ class QuizSubmitRequest(BaseModel):
     user_id: int
     answers: List[str] = Field(..., description="Selected option label per question, in order")
 
+class QuizReviewItem(BaseModel):
+    id: int
+    domain: str
+    scenario: str
+    question: str
+    options: List[QuizOption]
+    your_answer: Optional[str] = None
+    correct_option: str
+    is_correct: bool
+    explanation: str
+    citation: str
 
 class QuizSubmitResponse(BaseModel):
     assessment_id: int
@@ -40,3 +51,4 @@ class QuizSubmitResponse(BaseModel):
     domain_breakdown: dict
     updated_scores: dict
     overall_readiness_index: float
+    review: List[QuizReviewItem]
