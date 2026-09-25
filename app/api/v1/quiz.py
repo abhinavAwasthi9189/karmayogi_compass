@@ -9,9 +9,13 @@ from app.schemas.quiz import (
 )
 from app.api.deps import get_current_user
 from app.services.skillgap_service import compute_skill_gaps
-from app.services.quiz_service import generate_gap_weighted_quiz, generate_gap_weighted_quiz_from_bank
 from app.services.passport_service import grade_assessment, update_profile_and_passport
-from app.adapters.mock_dataset_loader import practice_bank_available
+from app.services.quiz_service import (
+    generate_gap_weighted_quiz, generate_gap_weighted_quiz_from_bank, generate_gap_weighted_quiz_from_corpus,
+)
+from app.adapters import mock_dataset_loader
+from app.config import get_settings
+from app.services.llm_client import describe_llm_error
 
 router = APIRouter(prefix="/quiz", tags=["Quiz"])
 
@@ -53,15 +57,30 @@ async def generate_quiz(
             raise HTTPException(status_code=422, detail=str(e))
         source_document = file.filename
     else:
-        # No file provided: fall back to the pre-authored mock/practice_assessments.csv bank.
-        if not practice_bank_available():
-            raise HTTPException(
-                status_code=400,
-                detail="No reference document was provided, and no practice question bank is available. "
-                       "Upload a PDF to generate an assessment.",
-            )
-        result = generate_gap_weighted_quiz_from_bank(gaps)
-        source_document = "Practice Assessment Bank (mock dataset)"
+        result = None
+        source_document = None
+        # RAG-on-our-own-corpus path: only attempted once a real Gemini key is
+        # configured. If the key is empty, or the call fails for any reason
+        # (rate limit, bad model, network issue), we fall straight back to
+        # the practice bank so the demo never breaks.
+        settings = get_settings()
+        if settings.GEMINI_API_KEY and mock_dataset_loader.course_corpus_available():
+            try:
+                result = generate_gap_weighted_quiz_from_corpus(gaps)
+                source_document = "Seeded Learning Corpus (AI-generated, RAG)"
+            except Exception as e:
+                print(f"[quiz] Corpus RAG generation failed, falling back to bank: {describe_llm_error(e)}")       
+        if result is None:
+            if not mock_dataset_loader.practice_bank_available():
+                raise HTTPException(
+                    status_code=400,
+                    detail="No reference document was provided, and no practice question bank is available. "
+                            "Upload a PDF to generate an assessment.",
+                )
+            result = generate_gap_weighted_quiz_from_bank(gaps)
+            source_document = "Practice Assessment Bank (mock dataset)"
+
+        print(f"[quiz] Generated from: {source_document}")
 
     if not result["questions"]:
         raise HTTPException(status_code=422, detail="Could not generate any questions for this assessment")
