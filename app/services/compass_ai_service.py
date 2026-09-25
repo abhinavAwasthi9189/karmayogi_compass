@@ -24,6 +24,7 @@ import litellm
 
 from app.config import get_settings
 from app.services.llm_client import complete_json, sampling_kwargs, describe_llm_error, extract_text
+from app.services.privacy import scrub
 
 settings = get_settings()
 logger = logging.getLogger(__name__)
@@ -74,6 +75,9 @@ def answer_question(context: str, question: str, history: Optional[List[str]] = 
             "facilitator."
         )
     try:
+        # Scrub obvious PII before anything reaches the third-party LLM call.
+        context = scrub(context)
+        question = scrub(question)
         messages = [{"role": "system", "content": ASK_SYSTEM_PROMPT}]
         # `history` is a flat alternating list of prior turns (user, assistant, user, ...)
         # so follow-ups like "what about the second one?" resolve instead of losing context.
@@ -82,7 +86,7 @@ def answer_question(context: str, question: str, history: Optional[List[str]] = 
             # trim on an even boundary so the window still opens on a user turn
             trimmed = trimmed[-(MAX_HISTORY_TURNS - MAX_HISTORY_TURNS % 2):]
         for index, turn in enumerate(trimmed):
-            messages.append({"role": "user" if index % 2 == 0 else "assistant", "content": str(turn)})
+            messages.append({"role": "user" if index % 2 == 0 else "assistant", "content": scrub(str(turn))})
         messages.append(
             {"role": "user", "content": f"We are teaching: {context}\n\nThe learner asked: {question}"}
         )
